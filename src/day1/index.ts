@@ -4,20 +4,18 @@ function isDigit(char: string) {
   return /^\d+$/.test(char);
 }
 
-const getFirstDigit = (line: string): number => {
+const getFirstDigit = (line: string): string => {
   const digit = line.split("").find((char) => isDigit(char));
   if (digit === undefined) {
     throw new Error("No digit found in the input string");
   }
-  return parseInt(digit, 10);
+  return digit;
 };
 
-const getLastDigit = (line: string): number => {
+const getLastDigit = (line: string): string => {
   const reversedLine = line.split("").reverse().join("");
   return getFirstDigit(reversedLine);
 };
-
-// const getLastDigit = (line: string) => {};
 
 // combine first digit and last digit
 const day1 = () => {
@@ -30,17 +28,13 @@ const day1 = () => {
     }
     // read each line
     const lines = data.split("\n");
-    console.log("line 1", lines[2]);
-    console.log("first digit is ", getFirstDigit(lines[2]));
-    console.log("last digit is ", getLastDigit(lines[2]));
-    console.log("the sum is ", getFirstDigit(lines[2]) + getLastDigit(lines[2]));
 
-    const total = lines.reduce((prev, current) => {
-      const firstDigit = getFirstDigit(line);
-      const lastDigit = getLastDigit(line);
+    const total = lines.reduce((prev, current, i) => {
+      const firstDigit = getFirstDigit(current);
+      const lastDigit = getLastDigit(current);
       const sum = firstDigit + lastDigit;
-      return sum.toString();
-    });
+      return (parseInt(prev, 10) + parseInt(sum, 10)).toString();
+    }, "0");
 
     console.log("TOTOAL = ", total);
   });
