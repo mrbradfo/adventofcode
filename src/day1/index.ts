@@ -1,43 +1,58 @@
 import { readFile } from "fs";
 
+const spelledNumbers = [
+  "zero",
+  "one",
+  "two",
+  "three",
+  "four",
+  "five",
+  "six",
+  "seven",
+  "eight",
+  "nine",
+];
+
 function isDigit(char: string) {
   return /^\d+$/.test(char);
 }
 
-const getFirstDigit = (line: string): string => {
-  const digit = line.split("").find((char) => isDigit(char));
-  if (digit === undefined) {
+function getDigit(line: string, first: boolean): string {
+  const matcher =
+    /[0-9]|(?=(one))|(?=(two))|(?=(three))|(?=(four))|(?=(five))|(?=(six))|(?=(seven))|(?=(eight))|(?=(nine))/g;
+  const matches = line.matchAll(matcher);
+  const matchArray = Array.from(matches);
+  if (matchArray == null) {
     throw new Error("No digit found in the input string");
   }
-  return digit;
-};
+  const filtered = matchArray
+    .map((match) => match.filter((item) => item !== "" && item !== undefined))
+    .flat();
 
-const getLastDigit = (line: string): string => {
-  const reversedLine = line.split("").reverse().join("");
-  return getFirstDigit(reversedLine);
-};
+  let foundDigit = first ? filtered[0] : filtered.slice(-1)[0]; // eg 1 or one
+  if (!isDigit(foundDigit)) {
+    foundDigit = spelledNumbers.findIndex((number) => number === foundDigit).toString();
+  }
+  return foundDigit;
+}
 
-// combine first digit and last digit
-const day1 = () => {
+function day1() {
   console.log("******* Day 1 *******");
-  // read input file
   readFile("src/day1/input.txt", "utf8", (err, data) => {
     if (err) {
       console.error(err);
       return;
     }
-    // read each line
     const lines = data.split("\n");
-
     const total = lines.reduce((prev, current, i) => {
-      const firstDigit = getFirstDigit(current);
-      const lastDigit = getLastDigit(current);
-      const sum = firstDigit + lastDigit;
-      return (parseInt(prev, 10) + parseInt(sum, 10)).toString();
+      const firstDigit = getDigit(current.toLowerCase(), true);
+      const lastDigit = getDigit(current.toLowerCase(), false);
+      const number = firstDigit + lastDigit;
+      return (parseInt(prev, 10) + parseInt(number, 10)).toString();
     }, "0");
 
     console.log("TOTOAL = ", total);
   });
-};
+}
 
 day1();
