@@ -46,5 +46,6 @@ module.exports = {
         ts: "never",
       },
     ],
+    "no-use-before-define": "off",
   },
 };
